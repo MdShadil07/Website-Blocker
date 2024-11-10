@@ -3,11 +3,6 @@ name: Python Website Blocker CI
 on:
   push:
     branches:
-      - mainname: Python Website Blocker CI
-
-on:
-  push:
-    branches:
       - main
   pull_request:
     branches:
@@ -48,47 +43,6 @@ jobs:
 
       - name: Create GitHub Release
         if: success()
-        uses: ncipollo/release-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: v1.0.${{ github.run_number }}
-          name: "Website Blocker Release v1.0.${{ github.run_number }}"
-          files: temp_release/website-blocker.zip
-          body: "Download and run `main.py` to use the Website Blocker app. This application must be run locally."
-
-  pull_request:
-    branches:
-      - main
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Check out the code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-
-      - name: Install dependencies
-        run: |
-          if [ -f website-blocker/requirements.txt ]; then pip install -r website-blocker/requirements.txt; fi
-
-      - name: Optional syntax check for non-GUI scripts
-        run: |
-          python -m py_compile website-blocker/main.py || echo "Syntax check skipped due to GUI dependency."
-        continue-on-error: true
-
-      - name: Package the application
-        run: |
-          mkdir -p temp_release
-          cp -r website-blocker/* temp_release/
-          cd temp_release && zip -r website-blocker.zip ./*
-
-      - name: Create GitHub Release
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
