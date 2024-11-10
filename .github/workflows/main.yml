@@ -32,9 +32,9 @@ jobs:
 
       - name: Package the application
         run: |
-          mkdir -p website-blocker/release
-          cp -r website-blocker/* website-blocker/release/
-          cd website-blocker/release && zip -r website-blocker.zip ./*
+          mkdir -p temp_release
+          cp -r website-blocker/* temp_release/
+          cd temp_release && zip -r website-blocker.zip ./*
 
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
@@ -42,5 +42,5 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: v1.0.${{ github.run_number }}
           name: "Website Blocker Release v1.0.${{ github.run_number }}"
-          files: website-blocker/release/website-blocker.zip
+          files: temp_release/website-blocker.zip
           body: "Download and run `main.py` to use the Website Blocker app. This application must be run locally."
