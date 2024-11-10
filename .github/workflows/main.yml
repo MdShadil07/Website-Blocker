@@ -1,0 +1,33 @@
+name: Python Website Blocker CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'  # Specify your desired Python version
+
+      - name: Install dependencies
+        run: |
+          if [ -f website-blocker/requirements.txt ]; then pip install -r website-blocker/requirements.txt; fi
+
+      - name: Verify script syntax (non-GUI)
+        run: |
+          python -m py_compile website-blocker/main.py || exit 1
+
+      - name: Notify successful setup
+        run: echo "Environment is set up. GUI applications cannot be fully tested in this environment."
