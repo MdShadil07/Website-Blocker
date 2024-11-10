@@ -28,7 +28,19 @@ jobs:
       - name: Optional syntax check for non-GUI scripts
         run: |
           python -m py_compile website-blocker/main.py || echo "Syntax check skipped due to GUI dependency."
-        continue-on-error: true  # Allow the job to continue even if syntax check fails
+        continue-on-error: true
 
-      - name: Notify successful setup
-        run: echo "Environment is set up. GUI applications cannot be fully tested in this environment."
+      - name: Package the application
+        run: |
+          mkdir -p website-blocker/release
+          cp -r website-blocker/* website-blocker/release/
+          cd website-blocker/release && zip -r website-blocker.zip ./*
+
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: v1.0.${{ github.run_number }}
+          name: "Website Blocker Release v1.0.${{ github.run_number }}"
+          files: website-blocker/release/website-blocker.zip
+          body: "Download and run `main.py` to use the Website Blocker app. This application must be run locally."
